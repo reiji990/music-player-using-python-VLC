@@ -69,6 +69,7 @@ static = tkinter.Label(text=u'Music Player for VLC',bg='black',fg='white',font=(
 static.grid(columnspan=3)
 
 # input number to select track
+#OK
 selectnum=tkinter.Entry(root, width=15)
 selectnum.grid(row=2,column=0)
 
@@ -116,10 +117,12 @@ def btnquitclick():
     gc.collect()
 
 # 操作ボタンの追加
+#OK
 btnpause=tkinter.Button(root, text="Pause or Play", 
     command=btnpauseclick)
 btnpause.grid(row=3,columnspan=1)
 
+#OK
 btnimfo=tkinter.Button(root, text="Imfomation", 
     command=btnimfoclick)
 btnpause.grid(row=0,colum=0)
@@ -141,6 +144,53 @@ btnquit=tkinter.Button(root, text="Quit",
 btnpause.grid(row=3,colum=2)
 
 
+
+
+
+while True:
+    data = input("> ")
+
+    #PAUSE / PLAY
+    if data == 'p':
+        p.pause()
+
+    #IMFORMATION
+    elif data == 'i':
+        x = p.get_media_player().get_media()
+        index = l.index_of_item(x)
+        print(f"now playing: {index+1}. {filename[index]}\n")
+        
+    #NEXT
+    elif data == 'n':
+        p.next()
+
+        x = p.get_media_player().get_media()
+        index = l.index_of_item(x)
+        print(f"next: {filename[index]}")
+
+    #BACK
+    elif data == 'b':
+        p.previous()
+
+        x = p.get_media_player().get_media()
+        index = l.index_of_item(x)
+        print(f"next: {filename[index]}")
+
+    #SELECT
+    elif data == 's':
+        print("slect the track number")
+        track = int(input("> "))
+        p.play_item_at_index(track-1)  
+
+        x = p.get_media_player().get_media()
+        index = l.index_of_item(x)
+        print(f"next: {filename[index]}")
+
+    #QUIT
+    elif data == 'q':
+        p.stop()
+
+        break   
 
 # メモリの解放
 del p
