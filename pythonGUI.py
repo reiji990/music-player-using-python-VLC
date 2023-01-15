@@ -20,9 +20,23 @@ root.option_add('*Button.background', 'gray')
 root.option_add('*Entry.background','gray')
 root.resizable(0,0)
 
+# クラスを作る
+class app(tkinter.Frame):
+    def __init__(self,root):
+        super().__init__(root,
+        width=600,height=500,
+        borderwidth=90,relief='groove')
+        self.pack()
+        self.pack_propagate(0)
+        self.root=root
+    def create_widgets():
+        name=tkinter.Label()
+        
+
+
+
 static = tkinter.Label(text=u'Music Player for VLC',bg='black',fg='white',font=("",50))
 static.grid(columnspan=3)
-
 
 # 入力欄
 artist = tkinter.Label(root, text=u'artist',bg='black',fg='white')
@@ -45,7 +59,8 @@ def btnclick():
     path.write('/System/Volumes/Data/Volumes/*/Music/*' + text1in + '*/*' + text2in + '*/*.flac' )
     path.close()
     import play
-    root.destroy()
+    root.quit()
+
 
 # playボタン
 btnRead=tkinter.Button(root, text="Play", 

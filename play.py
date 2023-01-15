@@ -53,7 +53,7 @@ playlist = open('playlist.txt', mode='a', encoding='utf-8')
 
 i = 0
 while i < len(glflac):
-    playlist.write(f"{i+1}. {(filename)[i]}")
+    playlist.write(f"{i+1}. {(filename)[i]}\n")
     i += 1
 
 playlist.close()

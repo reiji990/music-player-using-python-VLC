@@ -1,1 +1,1 @@
-/System/Volumes/Data/Volumes/*/Music/*Glenn*/*Mozart*/*.flac
+/System/Volumes/Data/Volumes/*/Music/**/*Mozart*/*.flac
