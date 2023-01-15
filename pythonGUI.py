@@ -45,6 +45,7 @@ def btnclick():
     path.write('/System/Volumes/Data/Volumes/*/Music/*' + text1in + '*/*' + text2in + '*/*.flac' )
     path.close()
     import play
+    root.destroy()
 
 # playボタン
 btnRead=tkinter.Button(root, text="Play", 

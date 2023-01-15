@@ -21,8 +21,12 @@ print(data)
 glflac = sorted(glob.glob(data))
 l = vlc.MediaList(glflac)
 
-# 再生アルバム一覧
-print("\nアルバム一覧")
+# album.txtの中身リセット
+albumlist = open('album.txt', mode='w', encoding='utf-8')
+albumlist.write('')
+albumlist.close()
+
+# アルバムリストtextファイル作成
 allfoldername = [os.path.dirname(r) for r in glflac]
 
 foldername = []
@@ -32,17 +36,27 @@ for element in allfoldername:
 
 i = 0
 while i < len(foldername):
-    print(f"{i+1}. {(foldername)[i]}")
+    albumlist = open('album.txt', mode='a', encoding='utf-8')
+    albumlist.write(f"{i+1}. {(foldername)[i]} \n")
     i += 1
 
-# 再生楽曲一覧
-print("\nプレイリスト")
+albumlist.close()
+
+#playlist リセット
+playlist = open('playlist.txt', mode='w', encoding='utf-8')
+playlist.write('')
+playlist.close()
+
+# playlist
 filename = [os.path.basename(r) for r in glflac]
+playlist = open('playlist.txt', mode='a', encoding='utf-8')
 
 i = 0
 while i < len(glflac):
-    print(f"{i+1}. {(filename)[i]}")
+    playlist.write(f"{i+1}. {(filename)[i]}")
     i += 1
+
+playlist.close()
 
 # メディアプレイヤーオブジェクトの作成、再生
 p = vlc.MediaListPlayer()
@@ -74,8 +88,9 @@ selectnum=tkinter.Entry(root, width=15)
 selectnum.grid(row=2,column=0)
 
 # imfo label
+#OK
 imfolabel=tkinter.Label(root,text=u'imfomation',bg='black',fg='white')
-imfolabel.grid(row=0,columnspan=2)
+imfolabel.grid(row=0,column=1,columnspan=2)
 
 # 操作ボタンの機能の関数
 def btnpauseclick():
@@ -120,9 +135,8 @@ def btnquitclick():
 #OK
 btnpause=tkinter.Button(root, text="Pause or Play", 
     command=btnpauseclick)
-btnpause.grid(row=3,columnspan=1)
+btnpause.grid(row=3,column=0,columnspan=2)
 
-#OK
 btnimfo=tkinter.Button(root, text="Imfomation", 
     command=btnimfoclick)
 btnpause.grid(row=0,colum=0)
