@@ -26,7 +26,7 @@ albumlist = open('album.txt', mode='w', encoding='utf-8')
 albumlist.write('')
 albumlist.close()
 
-# アルバムリストtextファイル作成
+# album.txtファイル作成
 allfoldername = [os.path.dirname(r) for r in glflac]
 
 foldername = []
@@ -42,12 +42,12 @@ while i < len(foldername):
 
 albumlist.close()
 
-#playlist リセット
+#playlist.txt リセット
 playlist = open('playlist.txt', mode='w', encoding='utf-8')
 playlist.write('')
 playlist.close()
 
-# playlist
+# playlist.txt作成
 filename = [os.path.basename(r) for r in glflac]
 playlist = open('playlist.txt', mode='a', encoding='utf-8')
 
@@ -79,17 +79,21 @@ root.option_add('*Button.background', 'gray')
 root.option_add('*Entry.background','gray')
 root.resizable(0,0)
 
-static = tkinter.Label(text=u'Music Player for VLC',bg='black',fg='white',font=("",50))
+# フレーム作成
+frame2 = tkinter.Frame(root,bd='black')
+frame2.pack()
+
+static = tkinter.Label(frame2,text=u'Music Player for VLC',bg='black',fg='white',font=("",50))
 static.grid(columnspan=3)
 
 # input number to select track
 #OK
-selectnum=tkinter.Entry(root, width=15)
+selectnum=tkinter.Entry(frame2, width=15)
 selectnum.grid(row=2,column=0)
 
 # imfo label
 #OK
-imfolabel=tkinter.Label(root,text=u'imfomation',bg='black',fg='white')
+imfolabel=tkinter.Label(frame2,text=u'imfomation',bg='black',fg='white')
 imfolabel.grid(row=0,column=1,columnspan=2)
 
 # 操作ボタンの機能の関数
@@ -133,27 +137,27 @@ def btnquitclick():
 
 # 操作ボタンの追加
 #OK
-btnpause=tkinter.Button(root, text="Pause or Play", 
+btnpause=tkinter.Button(frame2, text="Pause or Play", 
     command=btnpauseclick)
 btnpause.grid(row=3,column=0,columnspan=2)
 
-btnimfo=tkinter.Button(root, text="Imfomation", 
+btnimfo=tkinter.Button(frame2, text="Imfomation", 
     command=btnimfoclick)
 btnpause.grid(row=0,colum=0)
 
-btnnext=tkinter.Button(root, text="Next track", 
+btnnext=tkinter.Button(frame2, text="Next track", 
     command=btnnextclick)
 btnpause.grid(row=1,colum=0)
 
-btnback=tkinter.Button(root, text="Back track", 
+btnback=tkinter.Button(frame2, text="Back track", 
     command=btnbackclick)
 btnpause.grid(row=1,colum=1)
 
-btnselect=tkinter.Button(root, text="Select track", 
+btnselect=tkinter.Button(frame2, text="Select track", 
     command=btnselectclick)
 btnpause.grid(row=2,colum=1)
 
-btnquit=tkinter.Button(root, text="Quit", 
+btnquit=tkinter.Button(frame2, text="Quit", 
     command=btnquitclick)
 btnpause.grid(row=3,colum=2)
 
