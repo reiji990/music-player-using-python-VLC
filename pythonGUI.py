@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf8 -*-
 import sys
 import subprocess
 import os
@@ -9,9 +7,13 @@ from tkinter import ttk
 import vlc
 import glob
 import tkmacosx
+import threading
 
 # カレントディレクトリをこのファイルの絶対パスに変更
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
+# class
+
 
 # GUIアプリのデザイン
 root = tkinter.Tk()
@@ -65,24 +67,73 @@ def playframe():
     p.set_playback_mode(vlc.PlaybackMode.loop)
     p.play()
 
+# album.txtの中身リセット
+    albumlist = open('album.txt', mode='w', encoding='utf-8')
+    albumlist.write('')
+    albumlist.close()
+
+# album.txtファイル作成
+    allfoldername = [os.path.dirname(r) for r in glflac]
+
+    foldername = []
+    for element in allfoldername:
+        if element not in foldername:
+            foldername.append(element)
+
+    i = 0
+    while i < len(foldername):
+        albumlist = open('album.txt', mode='a', encoding='utf-8')
+        albumlist.write(f"{i+1}. {(foldername)[i]} \n")
+        i += 1
+
+    albumlist.close()
+
+# playlist.txt リセット
+    playlist = open('playlist.txt', mode='w', encoding='utf-8')
+    playlist.write('')
+    playlist.close()
+
+# playlist.txt作成
+    filename = [os.path.basename(r) for r in glflac]
+    playlist = open('playlist.txt', mode='a', encoding='utf-8')
+
+    i = 0
+    while i < len(glflac):
+        playlist.write(f"{i+1}. {(filename)[i]}\n")
+        i += 1
+
+    playlist.close()
+
+    info = p.get_media_player().get_media()
+    index = l.index_of_item(info)
+
 # メモリ解放
     gc.collect()
 
+# タイマー起動用関数
+    def timeEvent(self):
+        th = threading.Thread(target=self.update)
+        th.start()
+        self.after(1000,)
 
 # title2
     title2 = tkinter.Label(frame2,text=u'Music Player for VLC',bg='black',fg='white',font=("",50))
     title2.grid(columnspan=3)
 
-# imfo label
-    imfolabel=tkinter.Label(frame2,text=u'now playing: {index+1}. {filename[index]}',bg='black',fg='white')
-    imfolabel.grid(row=1,column=0,columnspan=3)
-
-# next track btn
-    selectbtn=tkinter.Button(frame2,text=u'next track', width=20,command=lambda:[p.next()])
-    selectbtn.grid(row=2,column=0)
+# info label
+    infolabel=tkinter.Label(frame2,text=f'now playing: {index+1}. {filename[index]}',bg='black',fg='white')
+    infolabel.grid(row=1,column=0,columnspan=3)
+# スレッド処理
+    def update(self):
+        self.count += 1
+        infolabel.label['text'] = f'now playing: {index+1}. {filename[index]}'
 
 # back track btn
     selectbtn=tkinter.Button(frame2,text=u'back track', width=20,command=lambda:[p.previous()])
+    selectbtn.grid(row=2,column=0)
+
+# next track btn
+    selectbtn=tkinter.Button(frame2,text=u'next track', width=20,command=lambda:[p.next()])
     selectbtn.grid(row=2,column=1)
 
 # albumlist btn
@@ -115,7 +166,6 @@ def btnclick():
     text2in = str(text2.get())
     path = open('path.txt', mode='w', encoding='utf-8')
     path.write('/System/Volumes/Data/Volumes/*/Music/*' + text1in + '*/*' + text2in + '*/*.flac' )
-#    path.write('C:/Users/834296/マイドライブ/music/*' + text1in + '*/*' + text2in + '*/*.flac' )
     path.close()
 
 # frame1削除

@@ -1,1 +1,1 @@
-/System/Volumes/Data/Volumes/*/Music/**/*Mozart*/*.flac
+/System/Volumes/Data/Volumes/*/Music/*放課後*/*2*/*.flac
