@@ -107,7 +107,7 @@ class Music_player(ttk.Frame):
                 root.backbtn = ttk.Button(root.frame2)
                 root.backbtn.grid(row=3,column=0)
                 root.backbtn['text'] = 'Back'
-                root.backbtn['command'] = lambda:[p.previous()]
+                root.backbtn['command'] = lambda:[backbtnfunc()]
                 root.nextbtn = ttk.Button(root.frame2)
                 root.nextbtn.grid(row=3,column=2)
                 root.nextbtn['text'] = 'Next'
@@ -122,7 +122,7 @@ class Music_player(ttk.Frame):
                 root.selectbtn = ttk.Button(root.frame2)
                 root.selectbtn.grid(row=1,column=1)
                 root.selectbtn['text'] = 'Select'
-#                root.selectbtn['command'] = lambda:[p.previous()]
+                root.selectbtn['command'] = lambda:[selectbtnfunc()]
                 root.playlistbtn = ttk.Button(root.frame2)
                 root.playlistbtn.grid(row=2,column=1)
                 root.playlistbtn['text'] = 'Playlist'
@@ -130,12 +130,29 @@ class Music_player(ttk.Frame):
                 root.playpausebtn = ttk.Button(root.frame2)
                 root.playpausebtn.grid(row=3,column=1)
                 root.playpausebtn['text'] = 'Play / Pause'
-                root.playpausebtn['command'] = lambda:[p.pause()]
+                root.playpausebtn['command'] = lambda:[pausebtnfunc()]
                 root.quitbtn = ttk.Button(root.frame2)
                 root.quitbtn.grid(row=3,column=3)
                 root.quitbtn['text'] = 'Quit'
                 root.quitbtn['command'] = lambda:[root.quit()]
 
+
+                def pausebtnfunc():
+                        p.pause()
+                        x = p.get_media_player().get_media()
+                        index = l.index_of_item(x)
+                        root.infolabel['text'] = f'{index+1}. {filename[index]}'
+                def backbtnfunc():
+                        p.previous()
+                        x = p.get_media_player().get_media()
+                        index = l.index_of_item(x)
+                        root.infolabel['text'] = f'{index+1}. {filename[index]}'
+                def selectbtnfunc():
+                        track = root.selectnum.get()
+                        p.play_item_at_index(track-1)
+                        x = p.get_media_player().get_media()
+                        index = l.index_of_item(x)
+                        root.infolabel['text'] = f'{index+1}. {filename[index]}'
 
 # Playbtnのコマンド内容
         def btnclick():
