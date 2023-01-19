@@ -6,7 +6,6 @@ import tkinter as tk
 from tkinter import ttk
 import vlc
 import glob
-import threading
 
 # カレントディレクトリをこのファイルの絶対パスに変更
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -16,7 +15,8 @@ class Music_player(ttk.Frame):
     def __init__(root, master = None):
         super().__init__(master)
         root.master = master
-        master.resizable(0,0)
+        master.resizable(1000,1000)
+        master.geometry('+1700+700')
         master.title('Music Player for VLC')
         master.option_add('*font', ('', 30))
         btnstyle = ttk.Style()
@@ -99,50 +99,59 @@ class Music_player(ttk.Frame):
 
                 info = p.get_media_player().get_media()
                 index = l.index_of_item(info)
-                
+                gc.collect()
+
 # frame2 GUI
-                root.infolabel = ttk.Label(root.frame2)
-                root.infolabel.grid(row=0,column=0,columnspan=4)
+                root.infolabel = tk.Message(root.frame2)
+                root.infolabel.grid(row=3,column=0,columnspan=4)
                 root.infolabel['text'] = f'{index+1}. {filename[index]}'
+                root.infolabel['width'] = '400'
                 root.backbtn = ttk.Button(root.frame2)
-                root.backbtn.grid(row=3,column=0)
+                root.backbtn.grid(row=2,column=0)
                 root.backbtn['text'] = 'Back'
                 root.backbtn['command'] = lambda:[backbtnfunc()]
                 root.nextbtn = ttk.Button(root.frame2)
-                root.nextbtn.grid(row=3,column=2)
+                root.nextbtn.grid(row=2,column=2)
                 root.nextbtn['text'] = 'Next'
                 root.nextbtn['command'] = lambda:[nextbtnfunc()]
                 root.albumbtn = ttk.Button(root.frame2)
-                root.albumbtn.grid(row=2,column=0)
+                root.albumbtn.grid(row=1,column=0)
                 root.albumbtn['text'] = 'Album'
-#                root.albumbtn['command'] = lambda:[p.previous()]
+                root.albumbtn['command'] = lambda:[albumbtnfunc()]
                 root.selectnum = ttk.Entry(root.frame2,width=5)
-                root.selectnum.grid(row=1,column=0)
-#                root.selectnum.option_add(width=5)
+                root.selectnum.grid(row=0,column=0)
                 root.selectbtn = ttk.Button(root.frame2)
-                root.selectbtn.grid(row=1,column=1)
+                root.selectbtn.grid(row=0,column=1)
                 root.selectbtn['text'] = 'Select'
                 root.selectbtn['command'] = lambda:[selectbtnfunc()]
                 root.playlistbtn = ttk.Button(root.frame2)
-                root.playlistbtn.grid(row=2,column=1)
+                root.playlistbtn.grid(row=1,column=1)
                 root.playlistbtn['text'] = 'Playlist'
-                root.playlistbtn['command'] = lambda:[p.previous()]
+                root.playlistbtn['command'] = lambda:[playlistbtnfunc()]
                 root.playpausebtn = ttk.Button(root.frame2)
-                root.playpausebtn.grid(row=3,column=1)
+                root.playpausebtn.grid(row=2,column=1)
                 root.playpausebtn['text'] = 'Play / Pause'
                 root.playpausebtn['command'] = lambda:[pausebtnfunc()]
                 root.quitbtn = ttk.Button(root.frame2)
-                root.quitbtn.grid(row=3,column=3)
+                root.quitbtn.grid(row=2,column=3)
                 root.quitbtn['text'] = 'Quit'
-                root.quitbtn['command'] = lambda:[root.quit()]
+                root.quitbtn['command'] = lambda:[quitbtnfunc()]
                 
+                def playlistbtnfunc():
+                        f = open('playlist.txt','r')
+                        data = f.read()
+                        root.infolabel['text'] = data
+                        master.resizable(1000,1000)
+                def albumbtnfunc():
+                        f = open('album.txt','r')
+                        data = f.read()
+                        root.infolabel['text'] = data
+                        master.resizable(1000,1000)
                 def nextbtnfunc():
                         p.next()
                         x = p.get_media_player().get_media()
                         index = l.index_of_item(x)
                         root.infolabel['text'] = f'{index+1}. {filename[index]}'
-                
-
                 def pausebtnfunc():
                         p.pause()
                         x = p.get_media_player().get_media()
@@ -154,11 +163,18 @@ class Music_player(ttk.Frame):
                         index = l.index_of_item(x)
                         root.infolabel['text'] = f'{index+1}. {filename[index]}'
                 def selectbtnfunc():
-                        track = root.selectnum.get()
+                        track = int(root.selectnum.get())
+                        root.selectnum.delete(0)
+                        root.selectnum.delete(0)
+                        root.selectnum.delete(0)
                         p.play_item_at_index(track-1)
                         x = p.get_media_player().get_media()
                         index = l.index_of_item(x)
                         root.infolabel['text'] = f'{index+1}. {filename[index]}'
+                        master.resizable(1000,1000)
+                def quitbtnfunc():
+                        gc.collect()
+                        root.quit()
 
 # Playbtnのコマンド内容
         def btnclick():
