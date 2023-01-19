@@ -99,7 +99,7 @@ class Music_player(ttk.Frame):
 
                 info = p.get_media_player().get_media()
                 index = l.index_of_item(info)
-
+                
 # frame2 GUI
                 root.infolabel = ttk.Label(root.frame2)
                 root.infolabel.grid(row=0,column=0,columnspan=4)
@@ -111,7 +111,7 @@ class Music_player(ttk.Frame):
                 root.nextbtn = ttk.Button(root.frame2)
                 root.nextbtn.grid(row=3,column=2)
                 root.nextbtn['text'] = 'Next'
-                root.nextbtn['command'] = lambda:[p.next()]
+                root.nextbtn['command'] = lambda:[nextbtnfunc()]
                 root.albumbtn = ttk.Button(root.frame2)
                 root.albumbtn.grid(row=2,column=0)
                 root.albumbtn['text'] = 'Album'
@@ -135,7 +135,13 @@ class Music_player(ttk.Frame):
                 root.quitbtn.grid(row=3,column=3)
                 root.quitbtn['text'] = 'Quit'
                 root.quitbtn['command'] = lambda:[root.quit()]
-
+                
+                def nextbtnfunc():
+                        p.next()
+                        x = p.get_media_player().get_media()
+                        index = l.index_of_item(x)
+                        root.infolabel['text'] = f'{index+1}. {filename[index]}'
+                
 
                 def pausebtnfunc():
                         p.pause()
