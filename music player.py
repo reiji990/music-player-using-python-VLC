@@ -17,7 +17,7 @@ class Music_player(ttk.Frame):
         root.master = master
         master.resizable(1000,1000)
         master.geometry('+1700+700')
-        master.title('Music Player for VLC')
+        master.title('Music Player with python-VLC')
         master.option_add('*font', ('', 30))
         btnstyle = ttk.Style()
         btnstyle.configure('custom.TButton',font=(None,60))
