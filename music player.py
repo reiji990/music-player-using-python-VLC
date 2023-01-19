@@ -12,34 +12,37 @@ import threading
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 # class
-class Music_player(tk.Frame):
+class Music_player(ttk.Frame):
     def __init__(root, master = None):
         super().__init__(master)
         root.master = master
         master.resizable(0,0)
         master.title('Music Player for VLC')
-        master.option_add('*font', ('', 40))
+        master.option_add('*font', ('', 30))
+        btnstyle = ttk.Style()
+        btnstyle.configure('custom.TButton',font=(None,60))
 
 # frame1 GUI
-        root.frame1 = tk.Frame(root.master)
+        root.frame1 = ttk.Frame(root.master)
         root.frame1.pack()
-        root.artist = tk.Label(root.frame1)
+        root.artist = ttk.Label(root.frame1)
         root.artist.grid(row=0,column=0)
-        root.artist['text'] = str('Artist')
-        root.album = tk.Label(root.frame1)
+        root.artist['text'] = 'Artist'
+        root.album = ttk.Label(root.frame1)
         root.album.grid(row=1,column=0)
-        root.album['text'] = str('Album')
-        root.input1 = tk.Entry(root.frame1)
+        root.album['text'] = 'Album'
+        root.input1 = ttk.Entry(root.frame1)
         root.input1.grid(row=0,column=1)
-        root.input2 = tk.Entry(root.frame1)
+        root.input2 = ttk.Entry(root.frame1)
         root.input2.grid(row=1,column=1)
-        root.btnplay = tk.Button(root.frame1)
+        root.btnplay = ttk.Button(root.frame1)
         root.btnplay.grid(row=2,column=0,columnspan=2)
-        root.btnplay['text'] = str('Play')
+        root.btnplay['text'] = 'Play'
+        root.btnplay['style'] = 'custon.TButton'
 
 # frame2
         def playframe():
-                root.frame2 = tk.Frame(root.master)
+                root.frame2 = ttk.Frame(root.master)
                 root.frame2.pack()
 # 音楽再生
 # *.flacファイルを再生リスト化
@@ -98,9 +101,40 @@ class Music_player(tk.Frame):
                 index = l.index_of_item(info)
 
 # frame2 GUI
-                root.infolabel = tk.Label(root.frame2)
-                root.infolabel.grid(row=0,column=0,columnspan=3)
-                root.infolabel['text'] = f'now playing: {index+1}. {filename[index]}'
+                root.infolabel = ttk.Label(root.frame2)
+                root.infolabel.grid(row=0,column=0,columnspan=4)
+                root.infolabel['text'] = f'{index+1}. {filename[index]}'
+                root.backbtn = ttk.Button(root.frame2)
+                root.backbtn.grid(row=3,column=0)
+                root.backbtn['text'] = 'Back'
+                root.backbtn['command'] = lambda:[p.previous()]
+                root.nextbtn = ttk.Button(root.frame2)
+                root.nextbtn.grid(row=3,column=2)
+                root.nextbtn['text'] = 'Next'
+                root.nextbtn['command'] = lambda:[p.next()]
+                root.albumbtn = ttk.Button(root.frame2)
+                root.albumbtn.grid(row=2,column=0)
+                root.albumbtn['text'] = 'Album'
+#                root.albumbtn['command'] = lambda:[p.previous()]
+                root.selectnum = ttk.Entry(root.frame2,width=5)
+                root.selectnum.grid(row=1,column=0)
+#                root.selectnum.option_add(width=5)
+                root.selectbtn = ttk.Button(root.frame2)
+                root.selectbtn.grid(row=1,column=1)
+                root.selectbtn['text'] = 'Select'
+#                root.selectbtn['command'] = lambda:[p.previous()]
+                root.playlistbtn = ttk.Button(root.frame2)
+                root.playlistbtn.grid(row=2,column=1)
+                root.playlistbtn['text'] = 'Playlist'
+                root.playlistbtn['command'] = lambda:[p.previous()]
+                root.playpausebtn = ttk.Button(root.frame2)
+                root.playpausebtn.grid(row=3,column=1)
+                root.playpausebtn['text'] = 'Play / Pause'
+                root.playpausebtn['command'] = lambda:[p.pause()]
+                root.quitbtn = ttk.Button(root.frame2)
+                root.quitbtn.grid(row=3,column=3)
+                root.quitbtn['text'] = 'Quit'
+                root.quitbtn['command'] = lambda:[root.quit()]
 
 
 # Playbtnのコマンド内容
