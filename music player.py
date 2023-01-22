@@ -54,8 +54,9 @@ class Music_player(ttk.Frame):
                 def btnclick():
                         text1in = str(root.artistinput.get())
                         text2in = str(root.albuminput.get())
+                        musicfolder = open('musicfolderpath.txt', mode='r')
                         path = open('path.txt', mode='w', encoding='utf-8')
-                        path.write('/System/Volumes/Data/Volumes/*/Music/*' + text1in + '*/*' + text2in + '*/*.flac' )
+                        path.write(musicfolder + text1in + '*/*' + text2in + '*/*.flac' )
                         path.close()
                         root.inputframe.destroy()
                         framechange()
