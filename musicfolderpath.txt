@@ -1,1 +1,1 @@
-/System/Volumes/Data/Volumes/169.254.10.2/Music
+/Users/ユーザー名/Music
