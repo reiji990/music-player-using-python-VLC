@@ -12,21 +12,19 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 # classの設定
 class Music_player(ttk.Frame):
-	# __init__() メソッドは、新しく作成されたオブジェクトを初期化します。定義されたクラスの新しいインスタンスが作成されるたびに呼び出されます。
-	# 要するに、rootの中にインスタンスmaseterを設置した。
         def __init__(root, master = None):
                 super().__init__(master)
                 root.master = master
+                # ウィンドウの初期設定(大きさ、表示位置、アプリタイトル、フォントサイズ)
                 master.resizable(1000,1000)
-                master.geometry('+1700+700')
+                master.geometry('+2200+500')
                 master.title('Music Player with python-VLC')
-                master.option_add('*font', ('', 30))
+                master.option_add('*font', ('', 20))
 
                 # inputframe 各ウィジェット配置
                 root.inputframe = ttk.Frame(root.master)
                 root.inputframe.pack()
                 
-                #ボタンのスタイル設定
                 root.style = ttk.Style(root.inputframe)
                 root.style.configure('default.TButton', font=(None, 20))
                 
@@ -54,9 +52,10 @@ class Music_player(ttk.Frame):
                 def btnclick():
                         text1in = str(root.artistinput.get())
                         text2in = str(root.albuminput.get())
-                        musicfolder = open('musicfolderpath.txt', mode='r')
+                        musicfolder = str(open('musicfolderpath.txt', mode='r').read())
                         path = open('path.txt', mode='w', encoding='utf-8')
-                        path.write(musicfolder + text1in + '*/*' + text2in + '*/*.flac' )
+                        path.write(musicfolder + '/*' + text1in + '*/*' + text2in + '*/*.flac' )
+                        
                         path.close()
                         root.inputframe.destroy()
                         framechange()

@@ -1,1 +1,1 @@
-/System/Volumes/Data/Volumes/*/Music/*
+/System/Volumes/Data/Volumes/169.254.10.2/Music
