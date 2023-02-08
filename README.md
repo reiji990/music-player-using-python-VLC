@@ -5,7 +5,7 @@ GUI部分もPythonで書いており、Tkinterを使用しています。
 MacOS用に作成したものですが、Windowsでも動作します。但しUIデザインは異なります。  
 始めにアーティスト名、アルバム名を入力し、Musicフォルダ内でワードが部分一致したアルバムを再生します。  
 
-![画面収録 2023-02-08 22 09 37](https://user-images.githubusercontent.com/101491438/217541720-7c8c7f84-cb57-4aaf-9693-26cfda2f7994.gif)  
+![画面収録 2023-02-08 23 12 26](https://user-images.githubusercontent.com/101491438/217554235-16e67bb5-3577-4164-950d-d43cb5389c38.gif)
 
 # 事前準備
 
