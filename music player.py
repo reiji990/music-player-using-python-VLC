@@ -18,7 +18,7 @@ class Music_player(ttk.Frame):
                 # ウィンドウの初期設定(大きさ、表示位置、アプリタイトル、フォントサイズ)
                 master.resizable(1000,1000)
                 master.geometry('+2200+500')
-                master.title('Music Player with python-VLC')
+                master.title('Music Player using python-VLC')
                 master.option_add('*font', ('', 20))
 
                 # inputframe 各ウィジェット配置
