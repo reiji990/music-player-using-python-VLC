@@ -1,4 +1,4 @@
-# music-player-with-python-VLC 
+# music-player-using-python-VLC 
 
 Python-VLCを使ったミュージックプレイヤーです。  
 GUI部分もPythonで書いており、Tkinterを使用しています。  
