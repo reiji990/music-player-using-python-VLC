@@ -1,28 +1,24 @@
 import glob
-import gc
 import os
-import subprocess
-import sys
 import tkinter as tk
 from tkinter import ttk
 import vlc
+import datetime
 
 # カレントディレクトリをこのファイルの絶対パスに変更
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 class MusicPlayer(ttk.Frame):
-    """A music player GUI built using Python-VLC."""
 
     def __init__(self, master=None):
-        """Initialize the music player."""
         super().__init__(master)
         self.master = master
 
         # ウィンドウの初期設定(大きさ、表示位置、アプリタイトル、フォントサイズ)
         master.resizable(1000, 1000)
         master.geometry("+2200+500")
+        master.option_add("*font", ("Arial", 20))
         master.title("Music Player using Python-VLC")
-        master.option_add("*font", ("", 20))
 
         # input_frame作成
         self.input_frame = ttk.Frame(self.master)
@@ -46,7 +42,7 @@ class MusicPlayer(ttk.Frame):
 
         self.play_button = ttk.Button(self.input_frame, text="Play", width=20, style="default.TButton", command=self._play_button_clicked)
         self.play_button.grid(row=2, column=0, columnspan=2)
-
+    
     # play_buttonのイベント作成
     def _play_button_clicked(self):
         artist = self.artist_input.get()
@@ -55,8 +51,7 @@ class MusicPlayer(ttk.Frame):
         path = os.path.join(music_folder, f"*{artist}*/*{album}*/*.flac")
         with open("path.txt", mode="w", encoding="utf-8") as file:
             file.write(path)
-
-        self.input_frame.destroy()
+        self.input_frame.pack_forget()
         self._create_play_frame()
 
     # play_frame作成
@@ -69,6 +64,7 @@ class MusicPlayer(ttk.Frame):
         print(path)
         self.flac_files = sorted(glob.glob(path))
         self.media_list = vlc.MediaList(self.flac_files)
+        self.media_instance = vlc.Instance('--no-xlib')
         self.media_player = vlc.MediaListPlayer()
         self.media_player.set_media_list(self.media_list)
         self.media_player.set_playback_mode(vlc.PlaybackMode.loop)
@@ -109,7 +105,7 @@ class MusicPlayer(ttk.Frame):
         self.album_button = ttk.Button(self.play_frame, text="Album", command=self.album_button_clicked)
         self.album_button.grid(row=1, column=0)
 
-        self.back_button = ttk.Button(self.play_frame, text="Back", command=self.back_button_clicked)
+        self.back_button = ttk.Button(self.play_frame, text="<<", command=self.back_button_clicked)
         self.back_button.grid(row=2, column=0)
 
         self.playlist_button = ttk.Button(self.play_frame, text="Playlist", command=self.playlist_button_clicked)
@@ -118,63 +114,84 @@ class MusicPlayer(ttk.Frame):
         self.playpause_button = ttk.Button(self.play_frame, text="Play / Pause", command=self.pause_button_clicked)
         self.playpause_button.grid(row=2, column=1)
 
-        self.next_button = ttk.Button(self.play_frame, text="Next", command=self.next_button_clicked)
+        self.next_button = ttk.Button(self.play_frame, text=">>", command=self.next_button_clicked)
         self.next_button.grid(row=2, column=2)
 
-        self.quit_button = ttk.Button(self.play_frame, text="Quit", command=self.quit_button_clicked)
-        self.quit_button.grid(row=2, column=3)
+        self.return_button = ttk.Button(self.play_frame, text="Return", command=self.return_button_clicked)
+        self.return_button.grid(row=0, column=3)
 
         self.infolabel = tk.Message(self.play_frame, width=400)
-        self.infolabel.grid(row=3, column=0, columnspan=4)
-        
+        self.infolabel.grid(row=4, column=0, columnspan=4)
+
+        self.timelabel = tk.Message(self.play_frame, font=("Arial",15), width=80, anchor=tk.E)
+        self.timelabel.grid(row=3, column=3)
+        self.timelabel["text"] = f"/"
+
+        self.listlabel = tk.Message(self.play_frame, width=350)
+        self.listlabel.grid(row=5, column=0, columnspan=4)
+
         x = self.media_player.get_media_player().get_media()
         index = self.media_list.index_of_item(x)
         self.infolabel["text"] = f"{index+1}. {self.file_names[index]}"
 
-    def filelist_clicked(self):
-        with open("album.txt", "r") as f:
-            data = f.read()
-            self.infolabel["text"] = self.flac_files
+        # create a progress bar widget
+        self.progress_bar = ttk.Progressbar(self.play_frame, orient="horizontal", length=250, mode="determinate")
+        self.progress_bar.grid(row=3, column=0, columnspan=3)
+        self.update()
+
+
+        # bind the progress bar to the "MediaPlayerPositionChanged" event of the VLC player
+    def update(self):
+        value = self.media_player.get_media_player().get_time()
+        maximum = self.media_player.get_media_player().get_length()
+        self.progress_bar["value"] = value
+        self.progress_bar["maximum"] = maximum
+
+        x = self.media_player.get_media_player().get_media()
+        index = self.media_list.index_of_item(x)
+        self.infolabel["text"] = f"{index+1}. {self.file_names[index]}"
+
+        #Converted_Value = f"{int(value/1000//60)} : {value//1000%60}}"
+        Converted_Value = datetime.time(hour=int(value/1000//3600%60), minute=int(value/1000//60%60), second=value//1000%60)
+        #Converted_Maximum = f"{int(maximum/1000//60)} : {maximum//1000%60}"
+        Converted_Maximum = datetime.time(hour=int(maximum/1000//3600%60), minute=int(maximum/1000//60%60), second=maximum//1000%60)
+        
+        self.timelabel["text"] = f"{Converted_Value} / {Converted_Maximum}"
+        self.after(100, self.update)
 
     # play_frameの各ウィジェットのイベント追加
     def select_button_clicked(self):
         track = int(self.selectnum.get())
         self.selectnum.delete(0, tk.END)
         self.media_player.play_item_at_index(track-1)
-        x = self.media_player.get_media_player().get_media()
-        index = self.media_list.index_of_item(x)
-        self.infolabel["text"] = f"{index+1}. {self.file_names[index]}"
+        self.listlabel["text"] = ""
 
     def album_button_clicked(self):
         with open("album.txt", "r") as f:
             data = f.read()
-            self.infolabel["text"] = data
+            self.listlabel["text"] = data
 
     def playlist_button_clicked(self):
         with open("playlist.txt", "r") as f:
             data = f.read()
-            self.infolabel["text"] = data
+            self.listlabel["text"] = data
 
     def back_button_clicked(self):
         self.media_player.previous()
-        x = self.media_player.get_media_player().get_media()
-        index = self.media_list.index_of_item(x)
-        self.infolabel["text"] = f"{index+1}. {self.file_names[index]}"
+        self.listlabel["text"] = ""
 
     def next_button_clicked(self):
         self.media_player.next()
-        x = self.media_player.get_media_player().get_media()
-        index = self.media_list.index_of_item(x)
-        self.infolabel["text"] = f"{index+1}. {self.file_names[index]}"
+        self.listlabel["text"] = ""
 
     def pause_button_clicked(self):
         self.media_player.pause()
-        x = self.media_player.get_media_player().get_media()
-        index = self.media_list.index_of_item(x)
-        self.infolabel["text"] = f"{index+1}. {self.file_names[index]}"
+        self.listlabel["text"] = ""
 
-    def quit_button_clicked(self):
-        self.quit()
+    def return_button_clicked(self):
+        self.media_player.stop()
+        self.play_frame.pack_forget()
+        self.input_frame.pack()
 
 if __name__ == "__main__":
     gui = tk.Tk()
