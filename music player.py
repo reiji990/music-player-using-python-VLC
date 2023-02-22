@@ -4,6 +4,7 @@ import tkinter as tk
 from tkinter import ttk
 import vlc
 import datetime
+import csv
 
 # カレントディレクトリをこのファイルの絶対パスに変更
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -47,9 +48,9 @@ class MusicPlayer(ttk.Frame):
     def _play_button_clicked(self):
         artist = self.artist_input.get()
         album = self.album_input.get()
-        music_folder = open("musicfolderpath.txt", mode="r").read()
+        music_folder = open("musicfolderpath.txt", mode="r", encoding="utf_8_sig").read()
         path = os.path.join(music_folder, f"*{artist}*/*{album}*/*.flac")
-        with open("path.txt", mode="w", encoding="utf-8") as file:
+        with open("path.txt", mode="w", encoding="utf_8_sig") as file:
             file.write(path)
         self.input_frame.pack_forget()
         self._create_play_frame()
@@ -60,7 +61,7 @@ class MusicPlayer(ttk.Frame):
         self.play_frame.pack()
 
         # 音楽再生
-        path = open("path.txt", mode="r").read()
+        path = open("path.txt", mode="r", encoding="utf_8_sig").read()
         print(path)
         self.flac_files = sorted(glob.glob(path))
         self.media_list = vlc.MediaList(self.flac_files)
@@ -70,30 +71,24 @@ class MusicPlayer(ttk.Frame):
         self.media_player.set_playback_mode(vlc.PlaybackMode.loop)
         self.media_player.play()
 
-        # album.txtクリア
-        with open("album.txt", mode="w", encoding="utf-8"):
-            pass
-
-        # album.txt作成
+        # album.csv作成
         self.all_folder_names = sorted({os.path.dirname(flac_file) for flac_file in self.flac_files})
 
-        with open("album.txt", mode="a", encoding="utf-8") as album_list:
+        with open("album.csv", mode="w", encoding="utf_8_sig", newline="") as album_list:
+            album_list_writer = csv.writer(album_list)
             for i, folder_name in enumerate(self.all_folder_names):
-                album_list.write(f"{i+1}. {folder_name}\n")
+                album_list_writer.writerow([i+1, folder_name])
 
-        # playlist.txtクリア
-        with open("playlist.txt", mode="w", encoding="utf-8"):
-            pass 
-
-        # playlist.txt作成
+        # playlist.csv作成
         self.file_names = [os.path.basename(flac_file) for flac_file in self.flac_files]
 
-        with open("playlist.txt", mode="a", encoding="utf-8") as playlist:
+        with open("playlist.csv", mode="w", encoding="utf_8_sig", newline="") as playlist:
+            playlist_writer = csv.writer(playlist)
             for i, file_name in enumerate(self.file_names):
-                playlist.write(f"{i+1}. {file_name}\n")
-        
+                playlist_writer.writerow([i+1, file_name])
+
         self.style = ttk.Style(self.play_frame)
-        self.style.configure("default.TButton", font=(None, 20))
+        self.style.configure("default.TButton")
         
         # play_frameのウィジェット作成
         self.selectnum = ttk.Entry(self.play_frame, width=5)
@@ -134,10 +129,16 @@ class MusicPlayer(ttk.Frame):
         index = self.media_list.index_of_item(x)
         self.infolabel["text"] = f"{index+1}. {self.file_names[index]}"
 
+        # create a scale widget for volume control
+        self.volume_scale = ttk.Scale(self.play_frame, from_=0, to=100, orient="horizontal", command=lambda x: self.media_player.get_media_player().audio_set_volume(int(x)))
+        self.volume_scale.set(50)
+        self.volume_scale.grid(row=2, column=3)
+
         # create a progress bar widget
         self.progress_bar = ttk.Progressbar(self.play_frame, orient="horizontal", length=250, mode="determinate")
         self.progress_bar.grid(row=3, column=0, columnspan=3)
         self.update()
+
 
 
         # bind the progress bar to the "MediaPlayerPositionChanged" event of the VLC player
@@ -157,7 +158,7 @@ class MusicPlayer(ttk.Frame):
         Converted_Maximum = datetime.time(hour=int(maximum/1000//3600%60), minute=int(maximum/1000//60%60), second=maximum//1000%60)
         
         self.timelabel["text"] = f"{Converted_Value} / {Converted_Maximum}"
-        self.after(100, self.update)
+        self.after(200, self.update)
 
     # play_frameの各ウィジェットのイベント追加
     def select_button_clicked(self):
@@ -167,14 +168,14 @@ class MusicPlayer(ttk.Frame):
         self.listlabel["text"] = ""
 
     def album_button_clicked(self):
-        with open("album.txt", "r") as f:
+        with open("album.csv", "r", encoding="utf_8_sig") as f:
             data = f.read()
             self.listlabel["text"] = data
 
     def playlist_button_clicked(self):
-        with open("playlist.txt", "r") as f:
+        with open("playlist.csv", "r", encoding="utf_8_sig") as f:
             data = f.read()
-            self.listlabel["text"] = data
+            self.listlabel["text"] = data.replace('\"','')
 
     def back_button_clicked(self):
         self.media_player.previous()
