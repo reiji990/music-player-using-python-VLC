@@ -15,9 +15,15 @@ class MusicPlayer(ttk.Frame):
         super().__init__(master)
         self.master = master
 
+        # メインモニターのサイズ取得
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+        x = int((screen_width/2)-150)
+        y = int((screen_height/2)-50)
+
         # ウィンドウの初期設定(大きさ、表示位置、アプリタイトル、フォントサイズ)
-        master.resizable(1000, 1000)
-        master.geometry("+2200+500")
+        master.resizable()
+        master.geometry("+{}+{}".format(x,y))
         master.option_add("*font", ("Arial", 20))
         master.title("Music Player using Python-VLC")
 
@@ -92,10 +98,10 @@ class MusicPlayer(ttk.Frame):
         
         # play_frameのウィジェット作成
         self.selectnum = ttk.Entry(self.play_frame, width=5)
-        self.selectnum.grid(row=0, column=0)
+        self.selectnum.grid(row=1, column=2)
 
         self.select_button = ttk.Button(self.play_frame, text="Select", command=self.select_button_clicked)
-        self.select_button.grid(row=0, column=1)
+        self.select_button.grid(row=1, column=3)
 
         self.album_button = ttk.Button(self.play_frame, text="Album", command=self.album_button_clicked)
         self.album_button.grid(row=1, column=0)
@@ -129,19 +135,16 @@ class MusicPlayer(ttk.Frame):
         index = self.media_list.index_of_item(x)
         self.infolabel["text"] = f"{index+1}. {self.file_names[index]}"
 
-        # create a scale widget for volume control
-        self.volume_scale = ttk.Scale(self.play_frame, from_=0, to=100, orient="horizontal", command=lambda x: self.media_player.get_media_player().audio_set_volume(int(x)))
-        self.volume_scale.set(50)
+        self.volume_scale = ttk.Scale(self.play_frame, from_=0, to=100, orient=tk.HORIZONTAL, command=lambda x: self.media_player.get_media_player().audio_set_volume(int(float(x))))
+        self.volume_scale.set(70)
         self.volume_scale.grid(row=2, column=3)
 
-        # create a progress bar widget
         self.progress_bar = ttk.Progressbar(self.play_frame, orient="horizontal", length=250, mode="determinate")
         self.progress_bar.grid(row=3, column=0, columnspan=3)
         self.update()
 
 
-
-        # bind the progress bar to the "MediaPlayerPositionChanged" event of the VLC player
+        # プログレスバー、秒数表示の更新
     def update(self):
         value = self.media_player.get_media_player().get_time()
         maximum = self.media_player.get_media_player().get_length()
@@ -152,9 +155,7 @@ class MusicPlayer(ttk.Frame):
         index = self.media_list.index_of_item(x)
         self.infolabel["text"] = f"{index+1}. {self.file_names[index]}"
 
-        #Converted_Value = f"{int(value/1000//60)} : {value//1000%60}}"
         Converted_Value = datetime.time(hour=int(value/1000//3600%60), minute=int(value/1000//60%60), second=value//1000%60)
-        #Converted_Maximum = f"{int(maximum/1000//60)} : {maximum//1000%60}"
         Converted_Maximum = datetime.time(hour=int(maximum/1000//3600%60), minute=int(maximum/1000//60%60), second=maximum//1000%60)
         
         self.timelabel["text"] = f"{Converted_Value} / {Converted_Maximum}"
