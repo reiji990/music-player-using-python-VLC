@@ -15,7 +15,7 @@ class MusicPlayer(ttk.Frame):
         super().__init__(master)
         self.master = master
 
-        # メインモニターのサイズ取得
+        # アプリの初期位置座標設定
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
         x = int((screen_width/2)-150)
@@ -47,11 +47,11 @@ class MusicPlayer(ttk.Frame):
         self.album_input = ttk.Entry(self.input_frame)
         self.album_input.grid(row=1, column=1)
 
-        self.play_button = ttk.Button(self.input_frame, text="Play", width=20, style="default.TButton", command=self._play_button_clicked)
-        self.play_button.grid(row=2, column=0, columnspan=2)
+        self.search_button = ttk.Button(self.input_frame, text="Search", width=20, style="default.TButton", command=self._search_button_clicked)
+        self.search_button.grid(row=2, column=0, columnspan=2)
     
-    # play_buttonのイベント作成
-    def _play_button_clicked(self):
+    # search_buttonのイベント作成
+    def _search_button_clicked(self):
         artist = self.artist_input.get()
         album = self.album_input.get()
         music_folder = open("musicfolderpath.txt", mode="r", encoding="utf_8_sig").read()
@@ -136,13 +136,12 @@ class MusicPlayer(ttk.Frame):
         self.infolabel["text"] = f"{index+1}. {self.file_names[index]}"
 
         self.volume_scale = ttk.Scale(self.play_frame, from_=0, to=100, orient=tk.HORIZONTAL, command=lambda x: self.media_player.get_media_player().audio_set_volume(int(float(x))))
-        self.volume_scale.set(70)
+        self.volume_scale.set(100)
         self.volume_scale.grid(row=2, column=3)
 
         self.progress_bar = ttk.Progressbar(self.play_frame, orient="horizontal", length=250, mode="determinate")
         self.progress_bar.grid(row=3, column=0, columnspan=3)
         self.update()
-
 
         # プログレスバー、秒数表示の更新
     def update(self):
@@ -163,7 +162,7 @@ class MusicPlayer(ttk.Frame):
 
     # play_frameの各ウィジェットのイベント追加
     def select_button_clicked(self):
-        track = int(self.selectnum.get())
+        track = int(float(self.selectnum.get()))
         self.selectnum.delete(0, tk.END)
         self.media_player.play_item_at_index(track-1)
         self.listlabel["text"] = ""
