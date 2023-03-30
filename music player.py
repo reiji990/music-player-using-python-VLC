@@ -55,9 +55,7 @@ class MusicPlayer(ttk.Frame):
         artist = self.artist_input.get()
         album = self.album_input.get()
         music_folder = open("musicfolderpath.txt", mode="r", encoding="utf_8_sig").read()
-        path = os.path.join(music_folder, f"*{artist}*/*{album}*/*.flac")
-        with open("path.txt", mode="w", encoding="utf_8_sig") as file:
-            file.write(path)
+        self.path = os.path.join(music_folder, f"*{artist}*/*{album}*/*.flac")
         self.input_frame.pack_forget()
         self._create_play_frame()
 
@@ -67,9 +65,8 @@ class MusicPlayer(ttk.Frame):
         self.play_frame.pack()
 
         # 音楽再生
-        path = open("path.txt", mode="r", encoding="utf_8_sig").read()
-        print(path)
-        self.flac_files = sorted(glob.glob(path))
+        print(self.path)
+        self.flac_files = sorted(glob.glob(self.path))
         self.media_list = vlc.MediaList(self.flac_files)
         self.media_instance = vlc.Instance('--no-xlib')
         self.media_player = vlc.MediaListPlayer()
