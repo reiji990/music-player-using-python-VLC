@@ -172,7 +172,7 @@ class MusicPlayer(ttk.Frame):
     def playlist_button_clicked(self):
         with open("playlist.csv", "r", encoding="utf_8_sig") as f:
             data = f.read()
-            self.listlabel["text"] = data.replace('\"','')
+            self.listlabel["text"] = data.replace('\"','').replace('.flac','')
 
     def back_button_clicked(self):
         self.media_player.previous()
