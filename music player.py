@@ -149,7 +149,7 @@ class MusicPlayer(ttk.Frame):
 
         x = self.media_player.get_media_player().get_media()
         index = self.media_list.index_of_item(x)
-        self.infolabel["text"] = f"{index+1}. {self.file_names[index]}"
+        self.infolabel["text"] = f"{index+1}. {self.file_names[index].replace('.flac','')}"
 
         Converted_Value = datetime.time(hour=int(value/1000//3600%60), minute=int(value/1000//60%60), second=value//1000%60)
         Converted_Maximum = datetime.time(hour=int(maximum/1000//3600%60), minute=int(maximum/1000//60%60), second=maximum//1000%60)
